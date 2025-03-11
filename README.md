@@ -11,14 +11,22 @@ Training materials for R cafe session on functions
 - Advanced R [functions](https://adv-r.hadley.nz/functions.html)
 
 ## Concepts to introduce
+- when should you write a function?
+- Function structure
 - arguments
+- function naming conventions
 - default values
-- return()
-- if...else() in a function
+- `return()`
+- `if...else()` in a function
+- `...` in argument list
+- optional arguments
+- error handling
+- writing documentation
 
 ## Examples
 - if...else in functions: https://www.geeksforgeeks.org/recursive-functions-in-r-programming/?ref=header_outind
 - function with default value: https://swcarpentry.github.io/r-novice-inflammation/02-func-R.html
+
 
 ## Excercises
 - [Functions](http://r-tutorials.com/r-exercises-beginners-easy-functions/)
