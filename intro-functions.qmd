@@ -1,0 +1,144 @@
+---
+title: "Introduction to Functions in R"
+author: "Your Name"
+date: "`r Sys.Date()`"
+format: html
+---
+
+# Introduction to Functions in R
+
+## When Should You Write a Function?
+
+Functions help avoid repetitive code, improve readability, and make debugging easier. You should write a function when:
+
+- You need to perform the same task multiple times.
+- Your code is getting too long or difficult to read.
+- You want to generalize a task to work with different inputs.
+
+## Function Structure
+
+A function in R is defined using the `function()` keyword:
+
+```r
+my_function <- function(arg1, arg2) {
+  # Function body
+  result <- arg1 + arg2
+  return(result)
+}
+```
+
+## Arguments
+
+Arguments allow users to pass values to a function. These values affect the function's behavior.
+
+```r
+add_numbers <- function(a, b) {
+  return(a + b)
+}
+```
+
+## Function Naming Conventions
+
+- Use lowercase words separated by underscores (`snake_case`).
+- Use meaningful names (`calculate_area`, not `ca`).
+- Avoid using names of existing R functions.
+
+## Default Values
+
+Default values provide fallback values if an argument is not provided.
+
+```r
+greet <- function(name = "User") {
+  return(paste("Hello,", name))
+}
+```
+
+## The `return()` Function
+
+Explicitly returning a value makes the function behavior clearer.
+
+```r
+multiply <- function(a, b) {
+  return(a * b)
+}
+```
+
+## `if...else()` in a Function
+
+Conditional statements allow decision-making inside functions.
+
+```r
+check_number <- function(x) {
+  if (x > 0) {
+    return("Positive")
+  } else if (x < 0) {
+    return("Negative")
+  } else {
+    return("Zero")
+  }
+}
+```
+
+## `...` in Argument List
+
+The `...` allows passing multiple arguments without explicitly listing them.
+
+```r
+sum_all <- function(...) {
+  return(sum(...))
+}
+```
+
+## Optional Arguments
+
+Optional arguments can be included by checking if they are `NULL`.
+
+```r
+print_message <- function(msg = NULL) {
+  if (!is.null(msg)) {
+    print(msg)
+  } else {
+    print("No message provided.")
+  }
+}
+```
+
+## Error Handling
+
+Use `stop()`, `warning()`, and `tryCatch()` to handle errors.
+
+```r
+divide <- function(a, b) {
+  if (b == 0) {
+    stop("Error: Division by zero is not allowed.")
+  }
+  return(a / b)
+}
+```
+
+## Writing Documentation
+
+Use `#'` to write documentation for a function (works with `roxygen2`).
+
+```r
+#' Add Two Numbers
+#'
+#' @param a First number
+#' @param b Second number
+#' @return Sum of `a` and `b`
+#' @examples
+#' add_numbers(2, 3)
+add_numbers <- function(a, b) {
+  return(a + b)
+}
+```
+
+## Exercises
+
+1. **Write a function** that takes a name and prints a greeting.
+2. **Create a function** that checks if a number is even or odd.
+3. **Write a function** that takes any number of words and combines them into a single sentence.
+4. **Implement error handling** in a function that divides two numbers.
+5. **Document a function** that takes two numbers and returns their product.
+
+Happy coding!
