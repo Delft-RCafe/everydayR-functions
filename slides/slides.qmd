@@ -1,0 +1,115 @@
+---
+title: "Avoid Repetition with Functions"
+author: "R Café @ TU Delft"
+format:
+  rcafe-revealjs: default
+---
+
+
+## When should you write a function
+
+```{r}
+#| echo: true
+
+df <- tibble::tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+df$a <- (df$a - min(df$a, na.rm = TRUE)) / 
+  (max(df$a, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$b <- (df$b - min(df$b, na.rm = TRUE)) / 
+  (max(df$b, na.rm = TRUE) - min(df$a, na.rm = TRUE))
+df$c <- (df$c - min(df$c, na.rm = TRUE)) / 
+  (max(df$c, na.rm = TRUE) - min(df$c, na.rm = TRUE))
+df$d <- (df$d - min(df$d, na.rm = TRUE)) / 
+  (max(df$d, na.rm = TRUE) - min(df$d, na.rm = TRUE))
+```
+. . . 
+
+Have you figured out what the code does?
+
+. . . 
+
+Have you spotted an error?
+
+## Let's convert it to a function
+
+```{r}
+#| echo: true
+#| eval: false
+x <- df$a
+(x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+```
+
+. . .
+
+```{r}
+#| echo: true
+#| eval: false
+rng <- range(x, na.rm = TRUE)
+(x - rng[1]) / (rng[2] - rng[1])
+```
+
+. . .
+
+```{r}
+#| echo: true
+#| eval: false
+rescale01 <- function(x) {
+  rng <- range(x, na.rm = TRUE)
+  (x - rng[1]) / (rng[2] - rng[1])
+}
+
+rescale01(c(0, 5, 10))
+```
+
+. . .
+
+```{r}
+#| echo: true
+#| eval: false
+df$a <- rescale01(df$a)
+df$b <- rescale01(df$b)
+df$c <- rescale01(df$c)
+df$d <- rescale01(df$d)
+```
+
+
+## TU Delft R Café {.center}
+
+::: {.columns}
+::: {.column width="70%"}
+
+<i class="nf nf-cod-home"></i> [delft-rcafe.github.io/home/](https://delft-rcafe.github.io/home/)  
+<i class="nf nf-md-email"></i> [rcafe-lib@tudelft.nl](mailto:rcafe-lib@tudelft.nl)  
+<i class="nf nf-md-github"></i> [delft-rcafe](https://github.com/delft-rcafe)
+<pre style="font-size: 35px; color: #00A6D6;">  
+Join our mailing list!
+
+</pre>
+
+:::
+
+::: {.column width="30%"}
+![ ](/_extensions/rcafe/qr_code.png){fig-align="center" width="250px"}
+:::
+:::
+
+## Rbanism Community
+
+::: {.columns}
+::: {.column width="70%"}
+
+Build capacity, competence, and confidence for working with data and research software in the urbanism community.
+
+
+<i class="nf nf-cod-home"></i> [rbanism.org/](https://delft-rcafe.github.io/home/) 
+:::
+
+::: {.column width="30%"}
+![ ](/_extensions/rcafe/rbanism.png){fig-align="center" width="250px"}
+:::
+:::

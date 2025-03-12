@@ -1,7 +1,7 @@
 ---
-title: "Introduction to Functions in R"
-author: "Your Name"
-date: "`r Sys.Date()`"
+title: "Everyday R Series: Part 2 - Avoid Repetition with Functions"
+author: "R Café @ TU Delft"
+date: last-modified
 format: html
 ---
 
@@ -9,32 +9,50 @@ format: html
 
 ## When Should You Write a Function?
 
-Functions help avoid repetitive code, improve readability, and make debugging easier. You should write a function when:
+Functions help avoid repetitive code, improve readability, and make debugging easier.
+You should write a function when:
 
 - You need to perform the same task multiple times.
 - Your code is getting too long or difficult to read.
 - You want to generalize a task to work with different inputs.
 
+It’s easier to start with working code and turn it into a function; 
+it’s harder to create a function and then try to make it work.
+
+::: {.callout-note}
+## Rule of thumb
+If you have to copy a block of code more than twice - write a function
+:::
+
+
 ## Function Structure
 
 A function in R is defined using the `function()` keyword:
 
-```r
-my_function <- function(arg1, arg2) {
+```{r}
+my_function <- function() { # function name
   # Function body
-  result <- arg1 + arg2
-  return(result)
+  result <- 1 + 2
+  
+  return(result) 
 }
+
+my_function()
 ```
 
 ## Arguments
 
-Arguments allow users to pass values to a function. These values affect the function's behavior.
+Most Functions work with arguments. 
+Arguments allow users to pass values to a function. 
+These values affect the function's behavior.
 
-```r
+```{r}
 add_numbers <- function(a, b) {
   return(a + b)
 }
+
+add_numbers(1,2)
+
 ```
 
 ## Function Naming Conventions
@@ -42,32 +60,70 @@ add_numbers <- function(a, b) {
 - Use lowercase words separated by underscores (`snake_case`).
 - Use meaningful names (`calculate_area`, not `ca`).
 - Avoid using names of existing R functions.
+- Use verbs for function names, noun for object names 
+  - In cases the function is very generic, of it's very obvious what it does,
+    consider using shorter name (e.g. `mean()` is better than `calculate_mean()`)
 
 ## Default Values
 
 Default values provide fallback values if an argument is not provided.
 
-```r
+```{r}
 greet <- function(name = "User") {
-  return(paste("Hello,", name))
+  return( paste("Hello,", name))
 }
+
+greet()
+greet("R Cafe Participants")
+
 ```
 
 ## The `return()` Function
 
+As you've seen, we have been using a `return()` function so that function produces
+an outcome. It is not strictly required to do this in R,but it's a good practice, 
+especially if you have different outcomes depending on a condition (we will come
+to this later). 
+If you don't use it, 
+R will will return the value of the last evaluated expression automatically.
+
 Explicitly returning a value makes the function behavior clearer.
 
-```r
+```{r}
 multiply <- function(a, b) {
   return(a * b)
 }
+
+multiply_implicit <- function(a, b) {
+  a * b
+}
+
+multiply(4,5)
+multiply_implicit(4,5)
+
 ```
+
+::: {.callout-note}
+## Functions without output
+There are also functions that don't return any value. 
+They might only print something to a console or write a file your drive, e.g.
+
+```{r}
+greet <- function(name){
+cat("Hello,", name, "!\n")
+}
+
+greet("Selin")
+
+```
+:::
+
 
 ## `if...else()` in a Function
 
 Conditional statements allow decision-making inside functions.
 
-```r
+```{r}
 check_number <- function(x) {
   if (x > 0) {
     return("Positive")
@@ -77,23 +133,29 @@ check_number <- function(x) {
     return("Zero")
   }
 }
+check_number(-0.5)
+
 ```
 
 ## `...` in Argument List
 
 The `...` allows passing multiple arguments without explicitly listing them.
 
-```r
+```{r}
 sum_all <- function(...) {
   return(sum(...))
 }
+
+sum_all(rnorm(10), rnorm(10) )
+sum_all(rnorm(10), rnorm(10), rnorm(10) )
+
 ```
 
 ## Optional Arguments
 
 Optional arguments can be included by checking if they are `NULL`.
 
-```r
+```{r}
 print_message <- function(msg = NULL) {
   if (!is.null(msg)) {
     print(msg)
@@ -101,37 +163,86 @@ print_message <- function(msg = NULL) {
     print("No message provided.")
   }
 }
+
+print_message()
+
 ```
 
 ## Error Handling
 
 Use `stop()`, `warning()`, and `tryCatch()` to handle errors.
 
-```r
+- Use `stop()` for critical errors - it will stop execution of a function
+- Use `warning()` for non-critical issues - 
+  it will inform the user about the potentially problematic issue, but the function will execute,
+- `tryCatch()` adapts the behaviour of the function, so that code still executes, 
+  providing a fall-back value in case of error  
+
+```{r}
+#| eval: false
+
+# stop()
+
 divide <- function(a, b) {
   if (b == 0) {
     stop("Error: Division by zero is not allowed.")
   }
   return(a / b)
 }
-```
 
-## Writing Documentation
+divide(10,0)
+divide(10, pi)
 
-Use `#'` to write documentation for a function (works with `roxygen2`).
 
-```r
-#' Add Two Numbers
-#'
-#' @param a First number
-#' @param b Second number
-#' @return Sum of `a` and `b`
-#' @examples
-#' add_numbers(2, 3)
-add_numbers <- function(a, b) {
-  return(a + b)
+# warning()
+
+safe_sqrt <- function(x) {
+  if (x < 0) {
+    warning("Warning: Taking the square root of a negative number returns NaN.")
+  }
+  return(sqrt(x))
 }
+
+safe_sqrt(-4) 
+safe_sqrt(4) 
+
+# tryCatch()
+
+safe_divide <- function(a, b) {
+  tryCatch(
+    {
+      if (b == 0) stop("Error: Division by zero!")
+      return(a / b)
+    },
+    error = function(e) {
+      message("An error occurred: ", e$message)
+      return(NA)
+    }
+  )
+}
+
+safe_divide(10, 0)  # Catches the error and returns NA
+safe_divide(10, 2)  # Works as expected
 ```
+
+<!-- ## Writing Documentation -->
+
+<!-- Use `#'` to write documentation for a function (works with `roxygen2`). -->
+<!-- } -->
+<!-- ```{r -->
+<!-- # install.packages("roxygen2") -->
+
+<!-- #' Add Two Numbers -->
+<!-- #' -->
+<!-- #' @param a First number -->
+<!-- #' @param b Second number -->
+<!-- #' @return Sum of `a` and `b` -->
+<!-- #' @examples -->
+<!-- #' add_numbers(2, 3) -->
+<!-- add_numbers <- function(a, b) { -->
+<!--   return(a + b) -->
+<!-- } -->
+<!-- ``` -->
 
 ## Exercises
 
@@ -139,6 +250,5 @@ add_numbers <- function(a, b) {
 2. **Create a function** that checks if a number is even or odd.
 3. **Write a function** that takes any number of words and combines them into a single sentence.
 4. **Implement error handling** in a function that divides two numbers.
-5. **Document a function** that takes two numbers and returns their product.
 
 Happy coding!
